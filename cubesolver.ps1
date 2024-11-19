@@ -1577,7 +1577,27 @@ class RubiksCube {
           @("Front",2,2,"Bottom",0,2,"Right",2,0)
       )
 
+      function solveCorner($corner) {
+          switch($corner) {
+              "WBR" { $selMovesArray = $movesForCornerLocationWBR; $foundIndex = 0 }
+              "WRG" {}
+              "WGO" {}
+              "WOB" {}
+              default { Write-Host "Error" }
+          }
+          for ($i = 0; $i -le 47; $i++) {
+              
+              $currectArrayIsCorrect = $true
+              for ($j = 0; $j -le 8; $j++) {
+                  $selElFound = $foundCornerLocations[$foundindex][$j]
+                  $selElMoves = $selMovesArray[$i][$j]
+                  if ($selElFound -ne $selElMoves) {
+                      $currectArrayIsCorrect = $false
+                  }
+              }
+          }
       
+      }
       
       function printFoundCornerLocations() {
           Write-Host
