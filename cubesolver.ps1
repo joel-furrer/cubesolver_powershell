@@ -1012,7 +1012,7 @@ class RubiksCube {
           @("Top",2,1,"U","U","B","B"),
 
           @("Right",0,1,"R","BC","RC"),
-          @("Right",1,0,"R","R","BC","RC"), #--
+          @("Right",1,0,"R","R","BC","RC","RC"), #--
           @("Right",1,2,"BC"),
 
           @("Back",0,1,"UC","LC","B"), #-- 
