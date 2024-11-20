@@ -994,7 +994,7 @@ class RubiksCube {
           @("Left",0,1,"UC","F","RC"),
           @("Left",1,0,"B","DC"),
           @("Left",1,2,"FC","D"),
-          @("Left",2,1,"D","D"),
+          @("Left",2,1,"RC","BC"), #--
 
           @("Bottom",0,1,"D"),
           @("Bottom",1,0,"D","D"),
@@ -1012,7 +1012,7 @@ class RubiksCube {
           @("Top",2,1,"U","U","B","B"),
 
           @("Right",0,1,"R","BC","RC"),
-          @("Right",1,0,"R","UC","RC","U","U"),
+          @("Right",1,0,"R","R","BC","RC"), #--
           @("Right",1,2,"BC"),
 
           @("Back",0,1,"UC","LC","B"), #-- 
@@ -1347,37 +1347,60 @@ class RubiksCube {
       
       # -> WBR, WRG, WGO, WOB
       $movesForCornerLocations = @(
-          @("Top",0,0,"Back",0,2,"Left",0,0),
-          @("Top",0,2,"Right",0,2,"Back",0,0),
-          @("Top",2,0,"Left",0,2,"Front",0,0),
-          @("Top",2,2,"Front",0,2,"Right",0,0),          
-          
-          @("Right",0,0,"Top",2,2,"Front",0,2),
-          @("Right",0,2,"Back",0,0,"Top",0,2),
-          @("Right",2,0,"Front",2,2,"Bottom",0,2),
-          @("Right",2,2,"Bottom",2,2,"Back",0,0),          
-          
-          @("Back",0,0,"Top",0,2,"Right",0,2),
-          @("Back",0,2,"Left",0,0,"Top",0,0),
-          @("Back",2,0,"Right",2,2,"Bottom",2,2),
-          @("Back",2,2,"Bottom",2,0,"Left",2,0),          
-          
-          @("Left",0,0,"Top",0,0,"Back",0,2),
-          @("Left",0,2,"Front",0,0,"Top",2,0),
-          @("Left",2,0,"Bottom",0,0,"Back",2,2),
-          @("Left",2,2,"Front",2,0,"Bottom",0,0),          
-          
-          @("Bottom",0,0,"Front",2,0,"Left",2,2),
-          @("Bottom",0,2,"Right",2,0,"Front",2,2),
-          @("Bottom",2,0,"Left",2,0,"Back",2,2),
-          @("Bottom",2,2,"Back",2,0,"Right",2,2),         
-          
-          @("Front",0,0,"Top",2,0,"Left",0,2),
-          @("Front",0,2,"Right",0,0,"Top",2,2),
-          @("Front",2,0,"Bottom",0,0,"Left",2,2),
-          @("Front",2,2,"Right",2,0,"Bottom",0,2)
-          
+          @("Top",0,0,"Left",0,0,"Back",0,2), #-- 0
+          @("Top",0,2,"Back",0,0,"Right",0,2), #-- 1
+          @("Top",2,0,"Front",0,0,"Left",0,2), #-- 2
+          @("Top",2,2,"Right",0,0,"Front",0,2), #-- 3   
+
+          @("Right",0,0,"Front",0,2,"Top",2,2), #-- 4
+          @("Right",0,2,"Top",0,2,"Back",0,0), #-- 5
+          @("Right",2,0,"Bottom",0,2,"Front",2,2), #-- 6
+          @("Right",2,2,"Back",2,0,"Bottom",2,2), #-- 7          
+
+          @("Back",0,0,"Right",0,2,"Top",0,2), #-- 8
+          @("Back",0,2,"Top",0,0,"Left",0,0), #-- 9
+          @("Back",2,0,"Bottom",2,2,"Right",2,2), #-- 1
+          @("Back",2,2,"Left",2,0,"Bottom",2,0), #-- 11   
+
+          @("Left",0,0,"Back",0,2,"Top",0,0), #--12
+          @("Left",0,2,"Top",2,0,"Front",0,0), #--13 
+          @("Left",2,0,"Bottom",2,0,"Back",2,2), #-- 14
+          @("Left",2,2,"Front",2,0,"Bottom",0,0), #-- 15          
+
+          @("Bottom",0,0,"Left",2,2,"Front",2,0), #-- 16
+          @("Bottom",0,2,"Front",2,2,"Right",2,0), #-- 17
+          @("Bottom",2,0,"Back",2,2,"Left",2,0), #-- 18
+          @("Bottom",2,2,"Right",2,2,"Back",2,0), #-- 19         
+
+          @("Front",0,0,"Left",0,2,"Top",2,0), #-- 20
+          @("Front",0,2,"Top",2,2,"Right",0,0), #-- 21
+          @("Front",2,0,"Bottom",0,0,"Left",2,2), #-- 22
+          @("Front",2,2,"Right",2,0,"Bottom",0,2) #-- 23
       )
+      
+      $movesForEdgeLocations = @(
+          @("Top",0,1,"Back",0,1),
+          @("Top",1,0,"Left",0,1),
+          @("Top",1,2,"Right",0,1),
+          @("Top",0,1,"Front",0,1),
+          
+          @("Right",0,1,"Top",1,2),
+          @("Right",1,0,"Front",1,2),
+          @("Right",1,2,"Back",1,0),
+          
+          @("Back",0,1,"Top",0,1),
+          @("Back",1,0,"Right",1,2),
+          @("Back",1,2,"Left",1,0),
+          
+          @("Left",0,1,"Top",1,0),
+          @("Left",1,0,"Back",1,2),
+          @("Left",1,2,"Front",1,0),
+          
+          @("Front",0,1,"Top",2,1),
+          @("Front",1,0,"Left",1,2),
+          @("Front",1,2,"Right",1,0)
+      )
+      
       
       $cornerCoordinates = @((0,0),(0,2),(2,0),(2,2))
       
@@ -1449,154 +1472,231 @@ class RubiksCube {
                           $foundCornerLocations[$index][$j] = $movesForCornerLocations[$i][$j]
                       }
                   }
-              } 
-          }
-      }
-      
-      
-      function searchCornerPiecesCCW($cornerColors) {
-          for ($i = 0; $i -le 23; $i++) {
-              Write-Host -NoNewline "`r$executor Checking Array: [ $i ]"
-              Start-Sleep -Milliseconds 50
-              $checkedElementSide1 = $movesForCornerLocations[$i][0]
-              $checkedElementRow1 = $movesForCornerLocations[$i][1]
-              $checkedElementColumn1 = $movesForCornerLocations[$i][2]
-              $checkedCornerTile1 = $this."$checkedElementSide1"[$checkedElementRow1][$checkedElementColumn1]
-              if ($checkedCornerTile1 -eq "W") {
-                  Write-Host "`n$executor Found [ W ] at Array: [ $i ]"
-                  $checkedElementSide2 = $movesForCornerLocations[$i][6]
-                  $checkedElementRow2 = $movesForCornerLocations[$i][7]
-                  $checkedElementColumn2 = $movesForCornerLocations[$i][8]
-                  $checkedCornerTile2 = $this."$checkedElementSide2"[$checkedElementRow2][$checkedElementColumn2]
-                  switch ($checkedCornerTile2) {
-                      "B" { $element2 = "B"; Write-Host "$executor Found [ B ] at Array: [ $i ]" }
-                      "R" { $element2 = "R"; Write-Host "$executor Found [ R ] at Array: [ $i ]" }
-                      "G" { $element2 = "G"; Write-Host "$executor Found [ G ] at Array: [ $i ]" }
-                      "O" { $element2 = "O"; Write-Host "$executor Found [ O ] at Array: [ $i ]" }
-                      default { Write-Host "$executor An Error occured while trying to read a White Corner Piece." }
-                  }
-                  $checkedElementSide3 = $movesForCornerLocations[$i][3]
-                  $checkedElementRow3 = $movesForCornerLocations[$i][4]
-                  $checkedElementColumn3 = $movesForCornerLocations[$i][5]
-                  $checkedCornerTile3 = $this."$checkedElementSide3"[$checkedElementRow3][$checkedElementColumn3]
-                  switch ($checkedCornerTile3) {
-                      "R" { $element3 = "R"; Write-Host "$executor Found [ R ] at Array: [ $i ]" }
-                      "G" { $element3 = "G"; Write-Host "$executor Found [ G ] at Array: [ $i ]"}
-                      "O" { $element3 = "O"; Write-host "$executor Found [ O ] at Array: [ $i ]"}
-                      "B" { $element3 = "B"; Write-Host "$executor Found [ B ] at Array: [ $i ]"}
-                      default { Write-Host "$executor An Error occured while trying to read a White Corner Piece." }
-                  }
-                  switch ($element2) {
-                      "B" { $index = 0 }
-                      "R" { $index = 1 }
-                      "G" { $index = 2 }
-                      "O" { $index = 3 }
-                      default { Write-Host "$executor An Error occured while trying to read a White Corner Piece." }
-                  }
-                  # test if color combination is allowed                  
-                  $colorCombinationIsAllowed = $false
-                  if ( $element2 -eq "B" -and $element3 -eq "R") {
-                      Write-Host "$executor Found Corner Piece: [ WBR ]"
-                      $colorCombinationIsAllowed = $true
-                  } elseif ( $element2 -eq "R" -and $element3 -eq "G") {
-                      Write-Host "$executor Found Corner Piece: [ WRG ]"
-                      $colorCombinationIsAllowed = $true
-                  } elseif ( $element2 -eq "G" -and $element3 -eq "O") {
-                      Write-Host "$executor Found Corner Piece: [ WGO ]"
-                      $colorCombinationIsAllowed = $true
-                  } elseif ( $element2 -eq "O" -and $element3 -eq "B") {
-                      Write-Host "$executor Found Corner Piece: [ WOB ]"
-                      $colorCombinationIsAllowed = $true
-                  } else {
-                      Write-Host "$executor ccw-debug"
-                  }
-                  if ($colorCombinationIsAllowed) {
-                      # swap 3,4,5 and 6,7,8 ?  
-                      for ($j = 0; $j -le 8; $j++) {
-                          $foundCornerLocations[$index][$j] = $movesForCornerLocations[$i][$j]
-                      }
-                  }
-              } 
-          }
-      }
-      
-      
-      $movesForCornerLocationWBR = @( # goal -> Bottom,2,2,Right,2,2,Back,2,0
-          @("Top",0,0,"Back",0,2,"Left",0,0), # RC, L, U, U, R, LC
-          @("Top",0,0,"Left",0,0,"Back",0,2),
-          @("Top",0,2,"Right",0,2,"Back",0,0),
-          @("Top",0,2,"Back",0,0,"Right",0,2),
-          @("Top",2,0,"Left",0,2,"Front",0,0),
-          @("Top",2,0,"Front",0,0,"Left",0,2),
-          @("Top",2,2,"Front",0,2,"Right",0,0),
-          @("Top",2,2,"Right",0,0,"Front",0,2),
-
-          @("Right",0,0,"Top",2,2,"Front",0,2),
-          @("Right",0,0,"Front",0,2,"Top",2,2),
-          @("Right",0,2,"Back",0,0,"Top",0,2),
-          @("Right",0,2,"Top",0,2,"Back",0,0),
-          @("Right",2,0,"Front",2,2,"Bottom",0,2),
-          @("Right",2,0,"Bottom",0,2,"Front",2,2),
-          @("Right",2,2,"Bottom",2,2,"Back",0,0),
-          @("Right",2,2,"Back",0,0,"Bottom",2,2),
-
-          @("Back",0,0,"Top",0,2,"Right",0,2),
-          @("Back",0,0,"Right",0,2,"Top",0,2),
-          @("Back",0,2,"Left",0,0,"Top",0,0),
-          @("Back",0,2,"Top",0,0,"Left",0,0),
-          @("Back",2,0,"Right",2,2,"Bottom",2,2),
-          @("Back",2,0,"Bottom",2,2,"Right",2,2),
-          @("Back",2,2,"Bottom",2,0,"Left",2,0),
-          @("Back",2,2,"Left",2,0,"Bottom",2,0),
-
-          @("Left",0,0,"Top",0,0,"Back",0,2),
-          @("Left",0,0,"Back",0,2,"Top",0,0),
-          @("Left",0,2,"Front",0,0,"Top",2,0),
-          @("Left",0,2,"Top",2,0,"Front",0,0),
-          @("Left",2,0,"Bottom",0,0,"Back",2,2),
-          @("Left",2,0,"Back",2,2,"Bottom",0,0),
-          @("Left",2,2,"Front",2,0,"Bottom",0,0),
-          @("Left",2,2,"Bottom",0,0,"Front",2,0),
-
-          @("Bottom",0,0,"Front",2,0,"Left",2,2),
-          @("Bottom",0,0,"Left",2,2,"Front",2,0),
-          @("Bottom",0,2,"Right",2,0,"Front",2,2),
-          @("Bottom",0,2,"Front",2,2,"Right",2,0),
-          @("Bottom",2,0,"Left",2,0,"Back",2,2),
-          @("Bottom",2,0,"Back",2,2,"Left",2,0),
-          @("Bottom",2,2,"Back",2,0,"Right",2,2),
-          @("Bottom",2,2,"Right",2,2,"Back",2,0),
-
-          @("Front",0,0,"Top",2,0,"Left",0,2),
-          @("Front",0,0,"Left",0,2,"Top",2,0),
-          @("Front",0,2,"Right",0,0,"Top",2,2),
-          @("Front",0,2,"Top",2,2,"Right",0,0),
-          @("Front",2,0,"Bottom",0,0,"Left",2,2),
-          @("Front",2,0,"Left",2,2,"Bottom",0,0),
-          @("Front",2,2,"Right",2,0,"Bottom",0,2),
-          @("Front",2,2,"Bottom",0,2,"Right",2,0)
-      )
-
-      function solveCorner($corner) {
-          switch($corner) {
-              "WBR" { $selMovesArray = $movesForCornerLocationWBR; $foundIndex = 0 }
-              "WRG" {}
-              "WGO" {}
-              "WOB" {}
-              default { Write-Host "Error" }
-          }
-          for ($i = 0; $i -le 47; $i++) {
-              
-              $currectArrayIsCorrect = $true
-              for ($j = 0; $j -le 8; $j++) {
-                  $selElFound = $foundCornerLocations[$foundindex][$j]
-                  $selElMoves = $selMovesArray[$i][$j]
-                  if ($selElFound -ne $selElMoves) {
-                      $currectArrayIsCorrect = $false
-                  }
+              } else {
+                  Write-Host
               }
           }
+      }
       
+      $movesForCornerLocationWBR = @(
+          @("Top",0,0,"Left",0,0,"Back",0,2,"BC","U","B","B","UC","BC"),
+          @("Top",0,2,"Back",0,0,"Right",0,2,"UC"),
+          @("Top",2,0,"Front",0,0,"Left",0,2,"U"),
+          @("Top",2,2,"Right",0,0,"Front",0,2,"U","U"),
+
+          @("Right",0,0,"Front",0,2,"Top",2,2,"U","U"),
+          @("Right",0,2,"Top",0,2,"Back",0,0,"U"),
+          @("Right",2,0,"Bottom",0,2,"Front",2,2,"R","U","RC"),
+          @("Right",2,2,"Back",2,0,"Bottom",2,2,"RC","UC","R"),
+
+          @("Back",0,0,"Right",0,2,"Top",0,2,"UC"),
+          @("Back",0,2,"Top",0,0,"Left",0,0,"U","U"),
+          @("Back",2,0,"Bottom",2,2,"Right",2,2,"B","U","BC"),
+          @("Back",2,2,"Left",2,0,"Bottom",2,0,"BC","UC","B"),
+
+          @("Left",0,0,"Back",0,2,"Top",0,0,"RC","U","R"),
+          @("Left",0,2,"Top",2,0,"Front",0,0,"UC"),
+          @("Left",2,0,"Bottom",2,0,"Back",2,2,"L","U","LC"),
+          @("Left",2,2,"Front",2,0,"Bottom",0,0,"LC","UC","L"),
+
+          @("Bottom",0,0,"Left",2,2,"Front",2,0,"LC","U","L"),
+          @("Bottom",0,2,"Front",2,2,"Right",2,0,"FC","UC","F"), #fixed
+          @("Bottom",2,0,"Back",2,2,"Left",2,0,"BC","UC","B"),
+          @("Bottom",2,2,"Right",2,2,"Back",2,0), #-- solved
+
+          @("Front",0,0,"Left",0,2,"Top",2,0,"U"),
+          @("Front",0,2,"Top",2,2,"Right",0,0,"B","UC","BC"),
+          @("Front",2,0,"Bottom",0,0,"Left",2,2,"F","U","FC"),
+          @("Front",2,2,"Right",2,0,"Bottom",0,2,"FC","UC","F")
+      )
+      
+      $movesForCornerLocationWRG = @(
+          @("Top",0,0,"Left",0,0,"Back",0,2,"UC"), #fixed
+          @("Top",0,2,"Back",0,0,"Right",0,2,"U","U"), #fixed
+          @("Top",2,0,"Front",0,0,"Left",0,2,"LC","U","L"), #fixed
+          @("Top",2,2,"Right",0,0,"Front",0,2,"U"), #fixed
+
+          @("Right",0,0,"Front",0,2,"Top",2,2,"U"),
+          @("Right",0,2,"Top",0,2,"Back",0,0,"L","UC","LC"),
+          @("Right",2,0,"Bottom",0,2,"Front",2,2,"R","U","RC"),
+          @("Right",2,2,"Back",2,0,"Bottom",2,2,"RC","UC","R"), #blocked
+
+          @("Back",0,0,"Right",0,2,"Top",0,2,"U","U"),
+          @("Back",0,2,"Top",0,0,"Left",0,0,"U"),
+          @("Back",2,0,"Bottom",2,2,"Right",2,2,"BC","U","B"), #blocked
+          @("Back",2,2,"Left",2,0,"Bottom",2,0,"BC","UC","B"), #fixed
+
+          @("Left",0,0,"Back",0,2,"Top",0,0,"UC"),
+          @("Left",0,2,"Top",2,0,"Front",0,0,"U","U"),
+          @("Left",2,0,"Bottom",2,0,"Back",2,2,"L","U","LC"),
+          @("Left",2,2,"Front",2,0,"Bottom",0,0,"LC","UC","L"), #fixed
+
+          @("Bottom",0,0,"Left",2,2,"Front",2,0,"LC","UC","L"),
+          @("Bottom",0,2,"Front",2,2,"Right",2,0,"R","U","RC"),
+          @("Bottom",2,0,"Back",2,2,"Left",2,0),
+          @("Bottom",2,2,"Right",2,2,"Back",2,0,"B","U","BC"), #blocked
+
+          @("Front",0,0,"Left",0,2,"Top",2,0,"BC","U","B"), # fixed
+          @("Front",0,2,"Top",2,2,"Right",0,0,"UC"),
+          @("Front",2,0,"Bottom",0,0,"Left",2,2,"F","UC","FC"),
+          @("Front",2,2,"Right",2,0,"Bottom",0,2,"FC","UC","F")
+      )
+      
+      $movesForCornerLocationWGO = @(
+          @("Top",0,0,"Left",0,0,"Back",0,2,"U","U"), #fixed
+          @("Top",0,2,"Back",0,0,"Right",0,2,"U"),#fixed
+          @("Top",2,0,"Front",0,0,"Left",0,2,"UC"), #fixed
+          @("Top",2,2,"Right",0,0,"Front",0,2,"R","UC","RC"), #fixed
+
+          @("Right",0,0,"Front",0,2,"Top",2,2,"LC","U","L"), #fixed
+          @("Right",0,2,"Top",0,2,"Back",0,0,"UC"), #fixed
+          @("Right",2,0,"Bottom",0,2,"Front",2,2,"R","U","RC"), #fixed
+          @("Right",2,2,"Back",2,0,"Bottom",2,2,"RC","UC","R"), #blocked
+
+          @("Back",0,0,"Right",0,2,"Top",0,2,"U"), #fixed 
+          @("Back",0,2,"Top",0,0,"Left",0,0,"F","UC","FC"), #fixed
+          @("Back",2,0,"Bottom",2,2,"Right",2,2,"BC","U","B"), #blocked
+          @("Back",2,2,"Left",2,0,"Bottom",2,0,"B","UC","B"), #blocked
+
+          @("Left",0,0,"Back",0,2,"Top",0,0,"U","U"), #fixed
+          @("Left",0,2,"Top",2,0,"Front",0,0,"U"), #fixed
+          @("Left",2,0,"Bottom",2,0,"Back",2,2,"LC","UC","L"), #blocked
+          @("Left",2,2,"Front",2,0,"Bottom",0,0,"LC","UC","L"), #fixed
+
+          @("Bottom",0,0,"Left",2,2,"Front",2,0,"LC","UC","L"), #blocked
+          @("Bottom",0,2,"Front",2,2,"Right",2,0,"R","U","RC"), #fixed
+          @("Bottom",2,0,"Back",2,2,"Left",2,0,"R","U","RC"), #blocked
+          @("Bottom",2,2,"Right",2,2,"Back",2,0,"B","U","BC"), #blocked
+
+          @("Front",0,0,"Left",0,2,"Top",2,0,"UC"), #fixed
+          @("Front",0,2,"Top",2,2,"Right",0,0,"U","U"), #fixed
+          @("Front",2,0,"Bottom",0,0,"Left",2,2,"F","U","FC"), #fixed
+          @("Front",2,2,"Right",2,0,"Bottom",0,2,"FC","UC","F") #fixed
+      )
+
+      $movesForCornerLocationWOB = @(
+          @("Top",0,0,"Left",0,0,"Back",0,2,"U","U"), #fixed
+          @("Top",0,2,"Back",0,0,"Right",0,2,"U"),#fixed
+          @("Top",2,0,"Front",0,0,"Left",0,2,"UC"), #fixed
+          @("Top",2,2,"Right",0,0,"Front",0,2,"R","UC","RC"), #fixed
+
+          @("Right",0,0,"Front",0,2,"Top",2,2,"UC"), #fixed
+          @("Right",0,2,"Top",0,2,"Back",0,0,"U","U"), #fixed
+          @("Right",2,0,"Bottom",0,2,"Front",2,2,"R","U","RC"), #fixed
+          @("Right",2,2,"Back",2,0,"Bottom",2,2,"RC","UC","R"), #blocked
+
+          @("Back",0,0,"Right",0,2,"Top",0,2,"FC","U","F"), #fixed
+          @("Back",0,2,"Top",0,0,"Left",0,0,"UC"), #fixed
+          @("Back",2,0,"Bottom",2,2,"Right",2,2,"BC","U","B"), #blocked
+          @("Back",2,2,"Left",2,0,"Bottom",2,0,"B","UC","B"), #blocked
+
+          @("Left",0,0,"Back",0,2,"Top",0,0,"U"), #fixed
+          @("Left",0,2,"Top",2,0,"Front",0,0,"R","UC","RC"), #fixed
+          @("Left",2,0,"Bottom",2,0,"Back",2,2,"LC","UC","L"), #blocked
+          @("Left",2,2,"Front",2,0,"Bottom",0,0,"LC","UC","L"), #blocked
+
+          @("Bottom",0,0,"Left",2,2,"Front",2,0,"LC","UC","L"), #blocked
+          @("Bottom",0,2,"Front",2,2,"Right",2,0,"R","U","RC"), #blocked
+          @("Bottom",2,0,"Back",2,2,"Left",2,0,"R","U","RC"), #blocked
+          @("Bottom",2,2,"Right",2,2,"Back",2,0,"B","U","BC"), #blocked
+
+          @("Front",0,0,"Left",0,2,"Top",2,0,"U","U"), #fixed
+          @("Front",0,2,"Top",2,2,"Right",0,0,"U"), #fixed
+          @("Front",2,0,"Bottom",0,0,"Left",2,2,"F","U","FC"), #blocked
+          @("Front",2,2,"Right",2,0,"Bottom",0,2,"FC","UC","F") #fixed
+       )   
+          
+          
+      function findMoveSetIndex($corner) {
+          searchCornerPiecesCW
+          switch($corner) {
+              "WBR" { $selMovesArray = $movesForCornerLocationWBR; $foundIndex = 0 }
+              "WRG" { $selMovesArray = $movesforCornerLocationWRG; $foundIndex = 1 }
+              "WGO" { $selMovesArray = $movesforCornerLocationWGO; $foundIndex = 2 }
+              "WOB" { $selMovesArray = $movesforCornerLocationWOB; $foundIndex = 3 }
+              default { Write-Host "Error" }
+          }
+          $arrayNotFound = $true
+          while ($arrayNotFound) {
+              for ($i = 0; $i -le 23; $i++) {
+              
+                  $currectArrayIsCorrect = $true
+                  for ($j = 0; $j -le 8; $j++) {
+                      $selElFound = $foundCornerLocations[$foundIndex][$j]
+                      $selElMoves = $selMovesArray[$i][$j]
+                      if ($selElFound -ne $selElMoves) {
+                          $currectArrayIsCorrect = $false
+                      }
+                  }
+                  if ($currectArrayIsCorrect) {
+                      $arrayNotFound = $false
+                      Write-Host "$executor Found correct Moveset [ $i ] for Corner piece: [ $corner ]"
+                      return $i
+                  } 
+              }
+          }
+      }
+      
+      function applyMoves($corner, $index) {
+          switch($corner) {
+              "WBR" { $selMovesArray = $movesForCornerLocationWBR }
+              "WRG" { $selMovesArray = $movesForCornerLocationWRG }
+              "WGO" { $selMovesArray = $movesForCornerLocationWGO }
+              "WOB" { $selMovesArray = $movesForCornerLocationWOB }
+              default { Write-Host "Error" }
+          }
+          $arrayLength = $selMovesArray.Length -1
+          for($i = 9; $i -le $arrayLength; $i++) {
+              $selMove = $selMovesArray[$index][$i]
+              $this.Move("$selMove")
+          }
+          
+      
+      }
+      
+      function checkIfCornerSolved($corner) {
+          switch($corner) {
+              "WBR" { $correctTile2 = "B"; $correctTile3 = "R" }
+              "WRG" { $correctTile2 = "R"; $correctTile3 = "G" }
+              "WGO" { $correctTile2 = "G"; $correctTile3 = "O" }
+              "WOB" { $correctTile2 = "O"; $correctTile3 = "B" }
+          }
+          switch($corner) {
+              "WBR" { $fTile2 = $this.Right[2][2]; $fTile3 = $this.Back[2][0]; $fTile1 = $this.Bottom[2][2] }
+              "WRG" { $fTile2 = $this.Back[2][2]; $fTile3 = $this.Left[2][0]; $fTile1 = $this.Bottom[2][0] }
+              "WGO" { $fTile2 = $this.Left[2][2]; $fTile3 = $this.Front[2][0]; $fTile1 = $this.Bottom[0][0] }
+              "WOB" { $fTile2 = $this.Front[2][2]; $fTile3 = $this.Right[2][0]; $fTile1 = $this.Bottom[0][2] }
+          }
+          
+          $cornerIsSolved = $false
+          
+          if ( $fTile1 -eq "W" ) {
+              Write-Host "$executor Corner is valid (1/3)"
+              if ( $fTile2 -eq $correctTile2 ) {
+                  Write-Host "$executor Corner is valid (2/3)"
+                  if ( $fTile3 -eq $correctTile3 ) {
+                      Write-Host "$executor Corner is valid (3/3)"
+                      $cornerIsSolved = $true
+                  }
+              } 
+          }
+          
+          if ($cornerIsSolved) {
+              return $true
+          } else {
+              return $false
+          }
+      }
+      
+      function solveCorner($corner) {
+          $alreadySolved = checkIfCornerSolved "$corner"
+          if ($alreadySolved) {
+              Write-Host "$executor Already solved corner [ $corner ]"
+          } else {
+              $index = findMoveSetIndex "$corner"
+              Write-Host "$index"
+              applyMoves "$corner" $index
+          }
       }
       
       function printFoundCornerLocations() {
@@ -1614,9 +1714,31 @@ class RubiksCube {
       }
       
       function solveF2LMain() {
+          
           searchCornerPiecesCW
-          searchCornerPiecesCCW
           printFoundCornerLocations
+          Write-Host "-----------------------------------------------------------------------------------------"
+          solveCorner "WBR"
+          solveCorner "WBR"
+          solveCorner "WBR"
+          $this.printCube()
+          Write-Host "-----------------------------------------------------------------------------------------"
+          solveCorner "WRG"
+          solveCorner "WRG"
+          solveCorner "WRG"
+          $this.printCube()
+          Write-Host "-----------------------------------------------------------------------------------------"
+          solveCorner "WGO"
+          solveCorner "WGO"
+          solveCorner "WGO"
+          solveCorner "WGO"
+          $this.printCube()
+          Write-Host "-----------------------------------------------------------------------------------------"
+          solveCorner "WOB"
+          solveCorner "WOB"
+          solveCorner "WOB"
+          solveCorner "WOB"
+          $this.printCube()
       }
       
       solveF2LMain
