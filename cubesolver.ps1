@@ -1123,7 +1123,6 @@ class RubiksCube {
           for($i = 0; $i -le $arrayLength; $i++) {
               $checkedArray = $selectedArray[$i]
               Write-Host -NoNewline "`r$executor Checking Array: [ $i ] "
-              Start-Sleep -Milliseconds 50
               $correctElements = 0
               for($index = 0; $index -le 2; $index++) {
                   $checkedArrayElement = $selectedArray[$i][$index]
@@ -1138,7 +1137,6 @@ class RubiksCube {
                       }
                       if ($correctElements -eq 3) {
                           Write-Host "`n$executor Found Correct Array: $i!"
-                          Start-Sleep -Milliseconds 500
                           $arrayIsFound = $true
                       }
                   }
@@ -1414,7 +1412,6 @@ class RubiksCube {
       function searchCornerPiecesCW($cornerColors) {
           for ($i = 0; $i -le 23; $i++) {
               Write-Host -NoNewline "`r$executor Checking Array: [ $i ]"
-              Start-Sleep -Milliseconds 50
               $checkedElementSide1 = $movesForCornerLocations[$i][0]
               $checkedElementRow1 = $movesForCornerLocations[$i][1]
               $checkedElementColumn1 = $movesForCornerLocations[$i][2]
@@ -1712,7 +1709,122 @@ class RubiksCube {
               Write-Host
           } 
       }
+     
+      # -- solve edges 
+      $foundTopLayerEdgePieces = @(("-","-"),("-","-"),("-","-"),("-","-"))
+      $edgePieceSides = @("Back","Left","Right","Front")
+      $topLayerEdgePieceCoords = @((0,1),(1,0),(1,2),(2,1))
       
+      function storeTopLayerEdgePieces() {
+          for ($i = 0; $i -le 3; $i++) {
+              $currTopRow = $topLayerEdgePieceCoords[$i][0]
+              $currTopCol = $topLayerEdgePieceCoords[$i][1]
+              $currTopTile = $this.Top[$currTopRow][$currTopCol]
+
+              $currSide = $edgePieceSides[$i]
+              $currSideTile = $this."$currSide"[0][1]
+
+              $foundTopLayerEdgePieces[$i][0] = $currTopTile
+              $foundTopLayerEdgePieces[$i][1] = $currSideTile
+          }
+      }
+      
+      function printFoundTopLayerEdgePieces() {
+          for ($i = 0; $i -le 3; $i++ ) {
+              $currSide = $edgePieceSides[$i]
+              $currEdgeTop = $foundTopLayerEdgePieces[$i][0]
+              $currEdgeSide = $foundTopLayerEdgePieces[$i][1]
+              Write-Host "$executor The edge piece for side [ $currSide ] is [ $currEdgeTop / $currEdgeSide ]"
+          }
+      }
+      
+      function bringToSide($side, $location) {
+          if($side = "B") {
+              switch($location) {
+                  0 { $this.Move("U") }
+                  1 { $this.Move("U"); $this.Move("U") }
+                  2 { Write-Host "No move required." }
+                  3 { $this.Move("UC") }
+              } 
+          } elseif ($side = "R") {
+              switch($location) {
+                  0 { Write-Host "No move required." }
+                  1 { $this.Move("U") }
+                  2 { $this.Move("UC") }
+                  3 { $this.Move("U"); $this.Move("U") }
+              } 
+          } elseif ($side = "G") {
+              switch($location) {
+                  0 { $this.Move("UC") }
+                  1 { Write-Host "No move required." }
+                  2 { $this.Move("U"); $this.Move("U") }
+                  3 { $this.Move("U") }
+              } 
+          } elseif ($side = "O") {
+              switch($location) {
+                  0 { $this.Move("U"); $this.Move("U") }
+                  1 { $this.Move("UC"); }
+                  2 { $this.Move("U") }
+                  3 { Write-Host "No move required." }
+              } 
+          }
+      }
+      
+      $moveSets = @(
+          ("UC","RC","U","R","U","B","UC","BC"), #BR
+          ("U","B","UC","BC","UC","RC","U","R"), #RB
+          ("UC","BC","U","B","U","L","UC","LC"), #RG
+          ("U","L","UC","LC","UC","BC","U","B"), #GR
+          ("UC","LC","U","L","U","F","UC","FC"), #GO
+          ("U","F","UC","FC","UC","LC","U","L"), #OG
+          ("UC","FC","U","F","U","R","UC","RC"), #OB
+          ("U","R","UC","RC","UC","FC","U","F") #BO
+      )
+      
+      function executeMoveSet($top, $side) {
+          $edgePiece = $top + $side
+          switch($edgepiece) {
+              "BR" { $index = 0 }
+              "RB" { $index = 1 }
+              "RG" { $index = 2 }
+              "GR" { $index = 3 }
+              "GO" { $index = 4 }
+              "OG" { $index = 5 }
+              "OB" { $index = 6 }
+              "BO" { $index = 7 }
+              default { Write-Host "Error" }
+          }
+          Write-Host "$executor Selected Moveset with index [ $index ]"
+          for ($i = 0; $i -le 7; $i++) {
+              $selectedMove = $moveSets[$index][$i]
+              Write-Host "$executor Executing move: [ $selectedMove ]"
+              $this.Move($selectedMove)
+          }
+          storeTopLayerEdgePieces
+      }
+      
+      function applyMoveSet($top, $side, $location) {
+          Write-Host "$executor Bringing the Edgepiece [ $top $side ] at [ $location ] to the corresponding side..."
+          bringToSide $side $location
+          Write-Host "$executor Executing the correct moveset..."
+          executeMoveSet $top $side
+      }
+
+      function solveEdgePieces() {
+          for ($i = 0; $i -le 3; $i++) {
+              Write-Host "----------------------------------------------------------------"
+              storeTopLayerEdgePieces
+              $edgePieceTop = $foundTopLayerEdgePieces[$i][0] 
+              $edgePieceSide = $foundTopLayerEdgePieces[$i][1]
+              if ($edgePieceTop -ne "Y") {
+                  if ($edgePieceSide -ne "Y") {
+                      applyMoveSet $edgePieceTop $edgePieceSide $i
+                  }
+              }
+              $this.printCube()
+          }
+      }
+     
       function solveF2LMain() {
           
           searchCornerPiecesCW
@@ -1738,6 +1850,13 @@ class RubiksCube {
           solveCorner "WOB"
           solveCorner "WOB"
           solveCorner "WOB"
+          $this.printCube()
+          Write-Host "-----------------------------------------------------------------------------------------"
+          storeTopLayerEdgePieces
+          printFoundTopLayerEdgePieces
+          solveEdgePieces
+          solveEdgePieces
+          solveEdgePieces
           $this.printCube()
       }
       
@@ -1773,7 +1892,7 @@ function Line($title) {
     Write-Host "[$line]"
     Write-Host "|$emptyBorderPadding < $title > $emptyBorderPaddingRight|"
     Write-Host "[$line]"
-    Start-Sleep -Milliseconds 250
+    Start-Sleep -Milliseconds 100
 }
 
 
