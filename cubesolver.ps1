@@ -994,7 +994,7 @@ class RubiksCube {
           @("Left",0,1,"UC","F","RC"),
           @("Left",1,0,"B","DC"),
           @("Left",1,2,"FC","D"),
-          @("Left",2,1,"RC","BC"), #--
+          @("Left",2,1,"D","FC","RC"), #--
 
           @("Bottom",0,1,"D"),
           @("Bottom",1,0,"D","D"),
@@ -1710,65 +1710,7 @@ class RubiksCube {
           } 
       }
      
-      # -- solve edges 
-      $foundTopLayerEdgePieces = @(("-","-"),("-","-"),("-","-"),("-","-"))
-      $edgePieceSides = @("Back","Left","Right","Front")
-      $topLayerEdgePieceCoords = @((0,1),(1,0),(1,2),(2,1))
-      
-      function storeTopLayerEdgePieces() {
-          for ($i = 0; $i -le 3; $i++) {
-              $currTopRow = $topLayerEdgePieceCoords[$i][0]
-              $currTopCol = $topLayerEdgePieceCoords[$i][1]
-              $currTopTile = $this.Top[$currTopRow][$currTopCol]
-
-              $currSide = $edgePieceSides[$i]
-              $currSideTile = $this."$currSide"[0][1]
-
-              $foundTopLayerEdgePieces[$i][0] = $currTopTile
-              $foundTopLayerEdgePieces[$i][1] = $currSideTile
-          }
-      }
-      
-      function printFoundTopLayerEdgePieces() {
-          for ($i = 0; $i -le 3; $i++ ) {
-              $currSide = $edgePieceSides[$i]
-              $currEdgeTop = $foundTopLayerEdgePieces[$i][0]
-              $currEdgeSide = $foundTopLayerEdgePieces[$i][1]
-              Write-Host "$executor The edge piece for side [ $currSide ] is [ $currEdgeTop / $currEdgeSide ]"
-          }
-      }
-      
-      function bringToSide($side, $location) {
-          if($side = "B") {
-              switch($location) {
-                  0 { $this.Move("U") }
-                  1 { $this.Move("U"); $this.Move("U") }
-                  2 { Write-Host "No move required." }
-                  3 { $this.Move("UC") }
-              } 
-          } elseif ($side = "R") {
-              switch($location) {
-                  0 { Write-Host "No move required." }
-                  1 { $this.Move("U") }
-                  2 { $this.Move("UC") }
-                  3 { $this.Move("U"); $this.Move("U") }
-              } 
-          } elseif ($side = "G") {
-              switch($location) {
-                  0 { $this.Move("UC") }
-                  1 { Write-Host "No move required." }
-                  2 { $this.Move("U"); $this.Move("U") }
-                  3 { $this.Move("U") }
-              } 
-          } elseif ($side = "O") {
-              switch($location) {
-                  0 { $this.Move("U"); $this.Move("U") }
-                  1 { $this.Move("UC"); }
-                  2 { $this.Move("U") }
-                  3 { Write-Host "No move required." }
-              } 
-          }
-      }
+      # ----------------------------------------- solve edges ------------------------------------------------- 
       
       $moveSets = @(
           ("UC","RC","U","R","U","B","UC","BC"), #BR
@@ -1781,52 +1723,54 @@ class RubiksCube {
           ("U","R","UC","RC","UC","FC","U","F") #BO
       )
       
-      function executeMoveSet($top, $side) {
-          $edgePiece = $top + $side
-          switch($edgepiece) {
-              "BR" { $index = 0 }
-              "RB" { $index = 1 }
-              "RG" { $index = 2 }
-              "GR" { $index = 3 }
-              "GO" { $index = 4 }
-              "OG" { $index = 5 }
-              "OB" { $index = 6 }
-              "BO" { $index = 7 }
-              default { Write-Host "Error" }
+      function applyMoveSet($index) {
+          for($i = 0; $i -le 7; $i++) {
+              $selMove = $moveSets[$index][$i]
+              $this.Move("$selMove")
           }
-          Write-Host "$executor Selected Moveset with index [ $index ]"
-          for ($i = 0; $i -le 7; $i++) {
-              $selectedMove = $moveSets[$index][$i]
-              Write-Host "$executor Executing move: [ $selectedMove ]"
-              $this.Move($selectedMove)
-          }
-          storeTopLayerEdgePieces
       }
       
-      function applyMoveSet($top, $side, $location) {
-          Write-Host "$executor Bringing the Edgepiece [ $top $side ] at [ $location ] to the corresponding side..."
-          bringToSide $side $location
-          Write-Host "$executor Executing the correct moveset..."
-          executeMoveSet $top $side
-      }
-
-      function solveEdgePieces() {
-          for ($i = 0; $i -le 3; $i++) {
-              Write-Host "----------------------------------------------------------------"
-              storeTopLayerEdgePieces
-              $edgePieceTop = $foundTopLayerEdgePieces[$i][0] 
-              $edgePieceSide = $foundTopLayerEdgePieces[$i][1]
-              if ($edgePieceTop -ne "Y") {
-                  if ($edgePieceSide -ne "Y") {
-                      applyMoveSet $edgePieceTop $edgePieceSide $i
+      $sides = @("Front","Right","Back","Left")
+      
+      function findLayerBR() {
+          $foundTile1 = $this.Right[1][2]
+          $foundTile2 = $this.Back[1][0]
+          $foundEdgePiece = $foundTile1 + $foundTile2
+          if ($foundEdgePiece -ne "BR") {
+              for($i = 0; $i -le 3; $i++) {
+                  $tile1 = $this.Right[1][2] 
+                  $tile2 = $this.Back[1][0]
+                  $edgePiece = $tile1 + $tile2
+                  if ($edgePiece -eq "BR") {
+                      applyMoveSet 0
+                  } elseif ($edgePiece -eq "RB") {
+                      $this.Move("Y")
+                      applyMoveSet 1
+                      $this.Move("YC")
                   }
+                  $this.Move("YC")
               }
-              $this.printCube()
           }
       }
-     
-      function solveF2LMain() {
-          
+
+      function solveBR() {
+          Write-Host "$executor Trying to solve edge Piece [ BR ]"
+          for($i = 0; $i -le 3; $i++) {
+              $tile1 = $this.Top[0][1] 
+              $tile2 = $this.Back[0][1]
+              $edgePiece = $tile1 + $tile2
+              if ($edgePiece -eq "BR") {
+                  applyMoveSet 0
+              } elseif ($edgePiece -eq "RB") {
+                  $this.Move("U")
+                  applyMoveSet 1
+                  $this.Move("UC")
+              }
+              $this.Move("U")
+          }
+      }
+      
+      function solveF2LMain() {   
           searchCornerPiecesCW
           printFoundCornerLocations
           Write-Host "-----------------------------------------------------------------------------------------"
@@ -1852,11 +1796,14 @@ class RubiksCube {
           solveCorner "WOB"
           $this.printCube()
           Write-Host "-----------------------------------------------------------------------------------------"
-          storeTopLayerEdgePieces
-          printFoundTopLayerEdgePieces
-          solveEdgePieces
-          solveEdgePieces
-          solveEdgePieces
+          
+          findLayerBR
+          solveBR
+          findLayerBR
+          solveBR
+          findLayerBR
+          solveBR
+          
           $this.printCube()
       }
       
@@ -1869,12 +1816,11 @@ class RubiksCube {
 $executor = "[ > CUBE-SOLVER < ]:"
 
 function Line($title) {
-    $totalWidth = 110          # Die Gesamtbreite der Zeilen, inklusive der Ränder
-    $borderChar = "="         # Das Zeichen für die Linien
+    $totalWidth = 110         
+    $borderChar = "="         
     $emptyBorderChar = " "
 
-    # Berechne den freien Platz links und rechts vom Titel
-    $padding = [math]::floor(($totalWidth - 4 - $title.Length) / 2)  # 4 Zeichen für "| > <"
+    $padding = [math]::floor(($totalWidth - 4 - $title.Length) / 2)
     $emptyBorderPadding = $emptyBorderChar * $padding
     $line = $borderChar * $totalWidth
     
@@ -1892,7 +1838,7 @@ function Line($title) {
     Write-Host "[$line]"
     Write-Host "|$emptyBorderPadding < $title > $emptyBorderPaddingRight|"
     Write-Host "[$line]"
-    Start-Sleep -Milliseconds 100
+    #Start-Sleep -Milliseconds 100
 }
 
 
