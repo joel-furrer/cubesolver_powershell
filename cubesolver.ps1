@@ -1731,41 +1731,171 @@ class RubiksCube {
       }
       
       $sides = @("Front","Right","Back","Left")
-      
+       
+      #-------------------- BR ---------------------  
+
       function findLayerBR() {
-          $foundTile1 = $this.Right[1][2]
-          $foundTile2 = $this.Back[1][0]
-          $foundEdgePiece = $foundTile1 + $foundTile2
-          if ($foundEdgePiece -ne "BR") {
-              for($i = 0; $i -le 3; $i++) {
-                  $tile1 = $this.Right[1][2] 
-                  $tile2 = $this.Back[1][0]
-                  $edgePiece = $tile1 + $tile2
-                  if ($edgePiece -eq "BR") {
-                      applyMoveSet 0
-                  } elseif ($edgePiece -eq "RB") {
-                      $this.Move("Y")
-                      applyMoveSet 1
-                      $this.Move("YC")
-                  }
-                  $this.Move("YC")
+          for($i = 0; $i -le 3; $i++) {
+              $foundTile1 = $this.Right[1][2]
+              $foundTile2 = $this.Back[1][0]
+              $foundEdgePiece = $foundTile1 + $foundTile2
+              if ($foundEdgePiece -eq "RB") {
+                  applyMoveSet 1
+              } elseif ($foundEdgePiece -eq "BR") {
+                  applyMoveSet 1
               }
+              $this.Move("Y")
           }
       }
 
       function solveBR() {
-          Write-Host "$executor Trying to solve edge Piece [ BR ]"
-          for($i = 0; $i -le 3; $i++) {
+          Write-Host "$executor Trying to solve Edge piece [ BR ]"
+          Write-Host "-------------------------------------------------------------------"
+          findLayerBR
+          for($i = 0; $i -le 4; $i++) {
               $tile1 = $this.Top[0][1] 
               $tile2 = $this.Back[0][1]
               $edgePiece = $tile1 + $tile2
+              Write-Host "$edgePiece"
               if ($edgePiece -eq "BR") {
+                  Write-Host "$executor Found Edge piece [ BR ] "
+                  Write-Host "$executor Executing moveset [ 0 ]"
                   applyMoveSet 0
               } elseif ($edgePiece -eq "RB") {
+                  Write-Host "$executor Found Edge piece [ RB ] "
                   $this.Move("U")
+                  Write-Host "$executor Executing moveset [ 1 ]"
                   applyMoveSet 1
                   $this.Move("UC")
               }
+              Write-Host "$executor Rotating the top layer..."
+              Write-Host "----------------------------------------"
+              $this.Move("U")
+          }
+      }
+      
+      #-------------------- RG ---------------------  
+
+      function findLayerRG() {
+          for($i = 0; $i -le 3; $i++) {
+              $foundTile1 = $this.Back[1][2]
+              $foundTile2 = $this.Left[1][0]
+              $foundEdgePiece = $foundTile1 + $foundTile2
+              if ($foundEdgePiece -eq "GR") {
+                  applyMoveSet 3
+              } elseif ($foundEdgePiece -eq "RG") {
+                  applyMoveSet 3
+              }
+              $this.Move("Y")
+          }
+      }
+
+      function solveRG() {
+          Write-Host "$executor Trying to solve Edge piece [ RG ]"
+          Write-Host "-------------------------------------------------------------------"
+          findLayerRG
+          for($i = 0; $i -le 4; $i++) {
+              $tile1 = $this.Top[1][0] 
+              $tile2 = $this.Left[0][1]
+              $edgePiece = $tile1 + $tile2
+              Write-Host "$edgePiece"
+              if ($edgePiece -eq "RG") {
+                  Write-Host "$executor Found Edge piece [ RG ] "
+                  Write-Host "$executor Executing moveset [ 2 ]"
+                  applyMoveSet 2
+              } elseif ($edgePiece -eq "GR") {
+                  Write-Host "$executor Found Edge piece [ GR ] "
+                  $this.Move("U")
+                  Write-Host "$executor Executing moveset [ 3 ]"
+                  applyMoveSet 3
+                  $this.Move("UC")
+              }
+              Write-Host "$executor Rotating the top layer..."
+              Write-Host "----------------------------------------"
+              $this.Move("U")
+          }
+      }
+      
+      #-------------------- GO ---------------------  
+
+      function findLayerGO() {
+          for($i = 0; $i -le 3; $i++) {
+              $foundTile1 = $this.Left[1][2]
+              $foundTile2 = $this.Front[1][0]
+              $foundEdgePiece = $foundTile1 + $foundTile2
+              if ($foundEdgePiece -eq "OG") {
+                  applyMoveSet 5
+              } elseif ($foundEdgePiece -eq "GO") {
+                  applyMoveSet 5
+              }
+              $this.Move("Y")
+          }
+      }
+
+      function solveGO() {
+          Write-Host "$executor Trying to solve Edge piece [ GO ]"
+          Write-Host "-------------------------------------------------------------------"
+          findLayerGO
+          for($i = 0; $i -le 4; $i++) {
+              $tile1 = $this.Top[2][1] 
+              $tile2 = $this.Front[0][1]
+              $edgePiece = $tile1 + $tile2
+              Write-Host "$edgePiece"
+              if ($edgePiece -eq "GO") {
+                  Write-Host "$executor Found Edge piece [ GO ] "
+                  Write-Host "$executor Executing moveset [ 4 ]"
+                  applyMoveSet 4
+              } elseif ($edgePiece -eq "OG") {
+                  Write-Host "$executor Found Edge piece [ OG ] "
+                  $this.Move("U")
+                  Write-Host "$executor Executing moveset [ 5 ]"
+                  applyMoveSet 5
+                  $this.Move("UC")
+              }
+              Write-Host "$executor Rotating the top layer..."
+              Write-Host "----------------------------------------"
+              $this.Move("U")
+          }
+      }
+      
+      #-------------------- OB ---------------------  
+
+      function findLayerOB() {
+          for($i = 0; $i -le 3; $i++) {
+              $foundTile1 = $this.Front[1][2]
+              $foundTile2 = $this.Right[1][0]
+              $foundEdgePiece = $foundTile1 + $foundTile2
+              if ($foundEdgePiece -eq "BO") {
+                  applyMoveSet 7
+              } elseif ($foundEdgePiece -eq "OB") {
+                  applyMoveSet 7
+              }
+              $this.Move("Y")
+          }
+      }
+
+      function solveOB() {
+          Write-Host "$executor Trying to solve Edge piece [ OB ]"
+          Write-Host "-------------------------------------------------------------------"
+          findLayerOB
+          for($i = 0; $i -le 4; $i++) {
+              $tile1 = $this.Top[1][2] 
+              $tile2 = $this.Right[0][1]
+              $edgePiece = $tile1 + $tile2
+              Write-Host "$edgePiece"
+              if ($edgePiece -eq "OB") {
+                  Write-Host "$executor Found Edge piece [ OB ] "
+                  Write-Host "$executor Executing moveset [ 6 ]"
+                  applyMoveSet 6
+              } elseif ($edgePiece -eq "BO") {
+                  Write-Host "$executor Found Edge piece [ BO ] "
+                  $this.Move("U")
+                  Write-Host "$executor Executing moveset [ 7 ]"
+                  applyMoveSet 7
+                  $this.Move("UC")
+              }
+              Write-Host "$executor Rotating the top layer..."
+              Write-Host "----------------------------------------"
               $this.Move("U")
           }
       }
@@ -1797,13 +1927,11 @@ class RubiksCube {
           $this.printCube()
           Write-Host "-----------------------------------------------------------------------------------------"
           
-          findLayerBR
           solveBR
-          findLayerBR
-          solveBR
-          findLayerBR
-          solveBR
-          
+          solveRG
+          solveGO
+          solveOB
+
           $this.printCube()
       }
       
