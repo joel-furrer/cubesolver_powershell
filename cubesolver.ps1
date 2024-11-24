@@ -1938,6 +1938,50 @@ class RubiksCube {
       solveF2LMain
       
   }
+
+  [void] SolveOLL() {
+      $executor = "[OLL-SOLVER]:"
+      # 1. read all of top layer
+      # 2.solve based on value
+      function storeTopLayer() {
+          $topLayer = ""
+          # ----- Top Side ------
+          for($i = 0; $i -le 2; $i++) {
+              for($j = 0; $j -le 2; $j++) {
+                  $selTile = $this.Top[$i][$j]
+                  if($selTile -eq "Y") {
+                      $topLayer = $topLayer + $selTile 
+                  } else {
+                      $topLayer = $topLayer + "X"
+                  }
+              }
+          }
+          # ----- other sides -----
+          $sides = @("Right","Back","Left","Front")
+          for($k = 0; $k -le 3; $k++) {
+              for($l = 0; $l -le 2; $l++) {
+                  $selSide = $sides[$k]
+                  $selTile = $this."$selSide"[0][$l]
+                  if($selTile -eq "Y") {
+                      $topLayer = $topLayer + $selTile 
+                  } else {
+                      $topLayer = $topLayer + "X"
+                  }
+                  
+              }
+          }
+          # print to check
+          Write-Host "$executor Top Layer = $topLayer"
+
+      }
+
+      function solveOLLMain() {
+          storeTopLayer
+      }
+
+      solveOLLMain
+  
+  }
   
 
 } # end of class -------------------------------------------------------------------------------------------
@@ -2042,6 +2086,7 @@ while($doRepeat) {
 
 $cube.SolveCross()
 $cube.SolveF2L()
+$cube.SolveOLL()
 
 Line "Printing the cube..."
 $cube.printCube()
