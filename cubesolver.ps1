@@ -1941,9 +1941,136 @@ class RubiksCube {
 
   [void] SolveOLL() {
       $executor = "[OLL-SOLVER]:"
+      
+      function findMoveSet($moveSet) {
+          switch($moveSet) {
+              "XXXXYXXXXYYYXYXYYYXYX" { return 0 }
+              "XXXXYXXXXYYYXYYXYXYYX" { return 1 }
+              "XXXXYXXXYXYYXYYXYYXYX" { return 2 }
+              "XXYXYXXXXYYXXYXYYXYYX" { return 3 }
+              "YXXXYXXXYXYXYYXXYYXYX" { return 4 }
+              "YXYXYXYXYXYXXYXXYXXYX" { return 5 }
+              "YXYXYXXXXYYXXYXXYYXYX" { return 6 }
+              "XXXXYXYXYXYXYYYXYXXYX" { return 7 }
+              "XYXXYXXYXYYYXXYXYXYXX" { return 8 }
+              "XYXXYXXYXYYYXXXYYYXXX" { return 9 }
+              "XXXYYYXXXYXYXYYXXXYYX" { return 10 }
+              "XXXYYYXXXYXYXYXYXYXYX" { return 11 }
+              "XYXYYYXYXYXYXXYXXXYXX" { return 12 }
+              "XYXYYYXYXYXYXXXYXYXXX" { return 13 }
+              "XYXYYYXYYXXXYXXYXXYXX" { return 14 }
+              "XYXYYYXYYXXYXXYXXYXXX" { return 15 }
+              "YYXYYYYYXXXXYXXXXXXXY" { return 16 }
+              "YYYYYYXYXXXXXXXXXXYXY" { return 17 }
+              "YYXYYYXYYXXXYXXXXYXXX" { return 18 }
+              "YXYYYXYYYXYXXYXXXXXXX" { return 19 }
+              "YXYYYYYXYXXXXYXXXXXYX" { return 20 } #fixed
+              "XYXYYXYXXXYYXXYXXXXYY" { return 21 }
+              "YYXYYXXXYXYYXXXXXXYYX" { return 22 }
+              "XYXYYXXXYXYXYXXYXXYYX" { return 23 }
+              "XYXYYXYXYXYXYXYXXXXYX" { return 24 }
+              "XYXYYXXXXXYXYXXYXYXYY" { return 25 }
+              "XYXYYXXXXXYXYXYXXXYYY" { return 26 }
+              "XYXXYYYXYXXXYXYXYXXYX" { return 27 }
+              "XYYXYYXXXYXXXXXYYXYYX" { return 28 }
+              "XYXXYYXXXYXYXXYXYXYYX" { return 29 } #fixed
+              "XYYXYYYXXYXXXXYXYXXYX" { return 30 }
+              "XYXXYYXXXXXXYXYXYXYYY" { return 31 }
+              "XYXXYYXXXXXXYXXYYYXYY" { return 32 }
+              "XXYYYXXYXXYXXYYXXYXXY" { return 33 }
+              "YXXYYXXYXYYXYYXXXXYXX" { return 34 }
+              "XXXYYXXYYXYXYYXYXXYXX" { return 35 } #fixed
+              "YXYYYXXYXYYXXYXXXYXXX" { return 36 }
+              "XXXXYYXYXXXXYYXYYYXXY" { return 37 }
+              "XXXXYYYYXXXYXYYXYXXXY" { return 38 }
+              "XXXXYYXYYXXYXYYXYYXXX" { return 39 }
+              "YXYXYYXYXYXXXYXXYYXXX" { return 40 }
+              "YYXXYXYYXYYYXXXXYXXXX" { return 41 }
+              "XXXYYYYXYXXYXYXYXXXYX" { return 42 }
+              "XXXYYYXXYXXXYYXYXXYYX" { return 43 }
+              "XXXYYYYXXXXYXYYXXXXYY" { return 44 }
+              "XXXYYYXXYXXYXYYXXYXYX" { return 45 }
+              "XXXYYYYXXYXXYYXYXXXYX" { return 46 }
+              "YYXYYXYXXYYYXXXXXXXYX" { return 47 }
+              "XYYXYYXXYXXXXXYXYXYYX" { return 48 }
+              "YYXYYXYXXXYXYXXXXXXYY" { return 49 }
+              "XYYXYYXXYXXXXXXYYYXYX" { return 50 }
+              "XXYYYYXXYXXXXYXYXYXYX" { return 51 }
+              "XXYYYYXXYXXXXYYXXXYYX" { return 52 }
+              "XXYXYYYYXXXXXYXYYXXXY" { return 53 }
+              "YXXYYXXYYXYYXYXXXXYXX" { return 54 }
+              "YXXYYYXXYXXXYYXXXYXYX" { return 55 }
+              "XXYYYYYXXYXXXYYXXXXYX" { return 56 }
+              default { Write-Host "$executor No Moveset found."; return 57 }
+
+
+          }
+      }
+
+	    $moveSets = @(
+          ("R", "U", "BC", "LD", "U", "LDC", "LDC", "XC", "UC", "RC", "F", "R", "FC"),  # 0 --fixed
+          ("U","RC", "F", "R", "FC", "U", "U", "RC", "F", "R", "YC", "R", "R", "U", "U", "R"),  # 1 --fixed
+          ("Y", "LC", "R", "R", "B", "RC", "B", "L", "UC", "UC", "LC","B", "MC"),  # 2 --fixed
+          ("RC", "U", "U", "X", "RC", "U", "R", "UC", "Y", "RC", "UC", "RC", "U", "RC", "F"),  # 3 --fixed
+          ("R", "U", "RC", "U", "RC", "F", "R", "FC", "U", "U", "RC", "F", "R", "FC"),  # 4 --fixed
+          ("MC", "U", "U", "M", "U", "U", "MC", "U", "M", "U", "U", "MC","U","U","M"),  # 5 --fixed
+          ("RC","U","U","F","R","U","RC","UC","YC","R","R","U","U","XC","R","U"),  # 6 --fixed
+          ("F", "R", "U", "RC", "U", "YC", "RC", "U", "U", "RC", "F", "R", "FC"),  # 7 --fixed
+          ("RC", "UC", "Y", "LC", "U", "LC", "YC", "L", "F", "LC", "F", "R"),  # 8 --fixed
+          ("R", "UC", "Y", "R", "R", "D", "RC", "U", "U", "R", "DC", "R", "R", "DD", "RC"),  # 9 --fixed
+          ("F", "U", "R", "UC", "RC", "U", "R", "UC", "RC", "FC"),  # 10 --fixed
+          ("LC", "BC", "L", "UC", "RC", "U", "R", "UC", "RC", "U", "R", "LC", "B", "L"),  # 11 --fixed
+          ("L", "UC", "RC", "U", "LC", "U", "R", "U", "RC", "U", "R"),  # 12 --fixed
+          ("R", "U", "RC", "U", "R", "UC", "RC", "U", "R", "U", "U", "RC"),  # 13 --fixed
+          ("LC", "U", "R", "UC", "L", "U", "RC"),  # 14 --fixed
+          ("RC","U","U","R","U","RC","U","R"),  # 15 --fixed
+          ("RC", "FC", "L", "F", "R", "FC", "LC", "F"),  # 16 --fixed
+          ("R","R","D","RC","U","U","R","DC","RC","U","U","RC"),  # 17 --fixed
+          ("RC", "FC", "LC", "F", "R", "FC", "L", "F"),  # 18 --fixed 
+          ("MC", "UC", "M", "U", "U", "MC", "UC", "M"),  # 19 --fixed
+          ("LC","R","U","RC","UC","L","RC","F","R","FC"),  # 20 --fixed
+          ("L","F","RC","F","R","F","F","LC"),  # 21 --fixed
+          ("F","RC","FC","R","U","R","UC","RC"),  # 22 --fixed
+          ("RC", "UC", "R", "YC", "XC", "R", "UC", "RC", "F", "R", "U", "RC"),  # 23 --fixed
+          ("UC", "R", "U", "U", "RC", "UC", "R", "UC", "R", "R", "YC", "RC", "UC", "R", "U", "B"),  # 24 --fixed
+          ("F", "R", "U", "RC", "UC", "R", "U", "RC", "UC", "F"),  # 25 --fixed
+          ("L","FC","LC","F","U","U","L","L","YC","L","F","LC","F"),  # 26  --fixed
+          ("UC", "RC", "U", "U", "R", "U", "RC", "U", "R", "R", "Y", "R", "U", "RC", "UC", "FC"),  # 27 --fixed
+          ("RD", "U", "U", "RC", "UC", "R", "UC", "RDC"),  # 28  --fixed
+          ("FC","LC","UC","L","U","LC","UC","L","U","F"),  # 29 --fixed
+          ("RC","U","U","LD","R","UC","RC","U","LDC","U","U","R"),  # 30 --fixed
+          ("RC", "F", "R", "FC", "U", "U", "R", "R", "YC", "RC", "FC", "R", "FC"),  # 31 --fixed
+          ("RC","F","R","FC","R","R","U","U","XC","UC","R","U","R"),  # 32 --fixed
+          ("R", "U", "RC", "Y", "RC", "F", "R", "UC", "RC", "FC", "R"),  # 33 --fixed
+          ("LC", "BC", "L", "UC", "RC", "U", "R", "LC", "B", "L"),  # 34 --fixed
+          ("U", "U", "RD", "R", "R", "UC", "R", "UC", "RC", "U", "U", "R", "UC", "M"),  # 35 --fixed
+          ("XC","UC","R","UC","RC","RC","F","X","R","U","RC","UC","R","B","B"),  # 36 --fixed
+          ("L","UC","YC","RC","UC","UC","RC","U","R","UC","R","U","U","R","RDC","LC"),  # 37 --fixed
+          ("U","U","LDC","L","L","U","LC","U","L","U","U","LC","U","M"),  # 38 --fixed
+          ("RDC","U","U","R","U","RC","U","RD"),  # 39 --fixed
+          ("RC","RC","U","RC","BC","R","UC","RC","RC","U","LD","U","LDC"),  # 40 --fixed
+          ("R", "U", "XC", "R", "UC", "RC", "UC", "X", "UC", "RC"),  # 41 --fixed
+          ("R", "U", "RC", "UC", "X", "DC", "RC", "U", "R", "EC"),  # 42--fixed
+          ("RC", "F", "R", "U", "RC", "FC", "R", "Y", "L", "UC", "LC"),  # 43 --fixed
+          ("L", "FC", "LC", "UC", "L", "F", "LC", "YC", "RC", "U", "R"),  # 44 --fixed
+          ("LC", "BC", "L", "RC", "UC", "R", "U", "LC", "B", "L"),  # 45 --fixed
+          ("R","B","RC","L","U","LC","UC","R","BC","RC"),  # 46 --fixed
+          ("F", "U", "R", "UC", "RC", "FC"),  # 47 --fixed
+          ("RC","DDC","L","DD","R","UC","RC","FC","R"),  # 48 --fixed
+          ("L", "D", "RC", "DC", "LC", "U", "L", "F", "LC"),  # 49 --fixed
+          ("FC", "UC", "LC", "U", "L", "F"),  # 50 --fixed
+          ("F","R","U","RC","UC","FC"),  # 51 --fixed
+          ("R", "U", "RC", "UC", "RC", "F", "R", "F"),  # 52 --fixed
+          ("L", "U", "LC", "U", "L", "UC", "LC", "UC", "YC", "YC", "RC", "F", "R", "FC"),  # 53 --fixed
+          ("RC", "UC", "R", "UC", "RC", "U", "R", "U", "Y", "F", "RC", "FC", "R"),  # 54 --fixed
+          ("RC","F","R","U","RC","UC","Y","LC","DD","R"),  # 55 --fixed
+          ("L", "FC", "LC", "UC", "L", "U", "YC", "R", "DC", "LC")  # 56 --fixed
+          
+      )
       # 1. read all of top layer
       # 2.solve based on value
       function storeTopLayer() {
+          
           $topLayer = ""
           # ----- Top Side ------
           for($i = 0; $i -le 2; $i++) {
@@ -1972,15 +2099,140 @@ class RubiksCube {
           }
           # print to check
           Write-Host "$executor Top Layer = $topLayer"
+          
+          #---------------------------------------
+          return $topLayer
+      }
+      
+      function solveTopLayer($topLayer) {
+          $moveSetNotFound = $true
+          $index = findMoveSet $topLayer
+          while ($moveSetNotFound) {
+              $index = findMoveSet $topLayer
+              if($index -eq 57) {
+                  Write-Host "$executor Rotating the Top layer to find the correct moveset..."
+                  $this.Move("U")
+                  $topLayer = storeTopLayer
 
+              } else {
+                  Write-Host "$executor Success! The cube is ready for the moveset"
+                  $moveSetNotFound = $false
+              }
+          }
+          $index = findMoveSet $topLayer
+          
+          Write-Host "$executor The Correct Index is: [ $index ]"
+          return $index
+      
+      }
+      
+      function ApplyMoveSet($index) {
+          $this.printCube()
+          $selMoveSet = $moveSets[$index]
+          $arrayLength = $selMoveSet.Length - 1
+          Write-Host "$executor Selected Array [ $index ] which has length: [ $arrayLength ]"
+          Write-Host "$executor Aligning top layer..."
+          #$this.Move("U") # -- align
+          for ($i = 0; $i -le $arrayLength; $i++) {
+              $selMove = $selMoveset[$i]
+              Write-Host "$executor Executing move [ $selMove ]"
+              $this.Move("$selMove")
+          }
+          $this.rotateCube()
+          Write-Host "$executor Selected Array [ $index ] which has length: [ $arrayLength ]"
+          
       }
 
+
       function solveOLLMain() {
-          storeTopLayer
+          $topLayer = storeTopLayer
+          $index = solveTopLayer $topLayer
+          $this.printCube()
+          Write-Host "$executor Top layer = $topLayer"
+          ApplyMoveSet $index
+          Write-Host "$executor Top layer was = $topLayer"
       }
 
       solveOLLMain
   
+  }
+  
+  [void] SolvePLL() {
+      $executor = "[PLL-SOLVER]:"
+      
+      $topLayer = @("-","-","-","-","-","-","-","-")
+      $topLayerInt = @(0,0,0,0,0,0,0,0)
+
+      function storeTopLayer() {
+          $selTile0 = $this.Front[0][2]
+          $selTile1 = $this.Right[0][0]
+          $selTile2 = $this.Right[0][1]
+          $selTile3 = $this.Right[0][2]
+          $selTile4 = $this.Back[0][0]
+          $selTile5 = $this.Back[0][1]
+          $selTile6 = $this.Back[0][2]
+          $selTile7 = $this.Left[0][0]
+          $selTile8 = $this.Left[0][1]
+          $selTile9 = $this.Left[0][2]
+          $selTile10 = $this.Front[0][0]
+          $selTile11 = $this.Front[0][1]
+          
+          $element0 = $selTile0 + $selTile1
+          $element1 = $selTile3 + $selTile4
+          $element2 = $selTile6 + $selTile7
+          $element3 = $selTile9 + $selTile10
+          
+          $topLayer[0] = $element0
+          $topLayer[1] = $selTile2
+          $topLayer[2] = $element1
+          $topLayer[3] = $selTile5
+          $topLayer[4] = $element2
+          $topLayer[5] = $selTile8
+          $topLayer[6] = $element3
+          $topLayer[7] = $selTile11
+
+      }
+      
+      function storeTopLayerInt() {
+          for($i = 0; $i -le 7; $i ++) {
+              $selTopLayerElement = $topLayer[$i]
+              switch($selTopLayerElement) {
+                  "OB" { $topLayerInt[$i] = 0 }
+                  "B" { $topLayerInt[$i] = 1 }
+                  "BR" { $topLayerInt[$i] = 2 }
+                  "R" { $topLayerInt[$i] = 3 }
+                  "RG" { $topLayerInt[$i] = 4 }
+                  "G" { $topLayerInt[$i] = 5 }
+                  "GO" { $topLayerInt[$i] = 6 }
+                  "O" { $topLayerInt[$i] = 7 }
+              }
+          }
+      }
+      
+      function printTopLayer() {
+          Write-Host "$executor Printing top layer..."
+          foreach($piece in $topLayer) {
+              Write-Host -NoNewline "$piece "
+          }
+          Write-Host
+      }
+      
+      function printTopLayerInt() {
+          Write-Host "$executor Printing top layer..."
+          foreach($piece in $topLayerInt) {
+              Write-Host -NoNewline "$piece "
+          }
+          Write-Host
+      }
+      
+      function solvePLLMain() {
+          storeTopLayer
+          printTopLayer
+          storeTopLayerInt
+          printTopLayerInt
+      }
+      
+      solvePLLMain
   }
   
 
@@ -2087,6 +2339,7 @@ while($doRepeat) {
 $cube.SolveCross()
 $cube.SolveF2L()
 $cube.SolveOLL()
+$cube.SolvePLL()
 
 Line "Printing the cube..."
 $cube.printCube()
