@@ -2207,7 +2207,7 @@ class RubiksCube {
           ("R", "R", "UDC", "R", "UC", "R", "U", "RC", "UD", "R", "R", "Y", "R", "UC", "RC"),
           ("R", "U", "RC", "YC", "R", "R", "UDC", "R", "UC", "RC", "U", "RC", "UD", "R", "R"),
           ("RC", "U", "U", "RC", "DDC", "RC", "FC", "R", "R", "UC", "RC", "U", "RC", "F", "R", "UC", "F"),
-          ("M", "M", "U", "M", "M", "U", "M", "M", "U", "U", "M", "M", "U", "U", "MC", "U", "U"),
+          ("M", "M", "U", "M", "M", "U", "MC", "U", "U", "M", "M", "U", "U", "MC", "U", "U"),
           ("F", "R", "UC", "RC", "UC", "R", "U", "RC", "FC", "R", "U", "RC", "UC", "RC", "F", "R", "FC"),
           ("L", "UC", "R", "U", "U", "LC", "U", "RC", "L", "UC", "R", "U", "U", "LC", "U", "RC", "U"),
           ("RC", "U", "LC", "U", "U", "R", "UC", "L", "RC", "U", "LC", "U", "U", "R", "UC", "L", "UC"),
