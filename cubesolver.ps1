@@ -493,7 +493,7 @@ class RubiksCube {
   }
   
   
-  # rotate four 1x3 lines around the cube
+  # rotate four 1x3 lines around the cube 
   [void] doMoveTurningCW($side, $orientation, $locationString, $rotation) {
       $executor = "[CUBE-MOVER]:"
       $location = [int]$locationString
