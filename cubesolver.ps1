@@ -2033,23 +2033,23 @@ class RubiksCube {
           ("F","RC","FC","R","U","R","UC","RC"),  # 22 --fixed
           ("RC", "UC", "R", "YC", "XC", "R", "UC", "RC", "F", "R", "U", "RC"),  # 23 --fixed
           ("UC", "R", "U", "U", "RC", "UC", "R", "UC", "R", "R", "YC", "RC", "UC", "R", "U", "B"),  # 24 --fixed
-          ("F", "R", "U", "RC", "UC", "R", "U", "RC", "UC", "F"),  # 25 --fixed
+          ("F", "R", "U", "RC", "UC", "R", "U", "RC", "UC", "FC"),  # 25 --fixed
           ("L","FC","LC","F","U","U","L","L","YC","L","F","LC","F"),  # 26  --fixed
           ("UC", "RC", "U", "U", "R", "U", "RC", "U", "R", "R", "Y", "R", "U", "RC", "UC", "FC"),  # 27 --fixed
           ("RD", "U", "U", "RC", "UC", "R", "UC", "RDC"),  # 28  --fixed
           ("FC","LC","UC","L","U","LC","UC","L","U","F"),  # 29 --fixed
           ("RC","U","U","LD","R","UC","RC","U","LDC","U","U","R"),  # 30 --fixed
-          ("RC", "F", "R", "FC", "U", "U", "R", "R", "YC", "RC", "FC", "R", "FC"),  # 31 --fixed
-          ("RC","F","R","FC","R","R","U","U","XC","UC","R","U","R"),  # 32 --fixed
+          ("RC", "F", "R", "FC", "U", "U", "R", "R", "Y", "RC", "FC", "R", "FC"),  # 31 --fixed
+          ("RC","F","RC","FC","R","R","U","U","XC","UC","R","U","RC"),  # 32 --fixed
           ("R", "U", "RC", "Y", "RC", "F", "R", "UC", "RC", "FC", "R"),  # 33 --fixed
           ("LC", "BC", "L", "UC", "RC", "U", "R", "LC", "B", "L"),  # 34 --fixed
           ("U", "U", "RD", "R", "R", "UC", "R", "UC", "RC", "U", "U", "R", "UC", "M"),  # 35 --fixed
           ("XC","UC","R","UC","RC","RC","F","X","R","U","RC","UC","R","B","B"),  # 36 --fixed
-          ("L","UC","YC","RC","UC","UC","RC","U","R","UC","R","U","U","R","RDC","LC"),  # 37 --fixed
+          ("L","UC","YC","RC","UC","UC","RC","U","R","UC","R","U","U","R","DDC","LC"),  # 37 --fixed
           ("U","U","LDC","L","L","U","LC","U","L","U","U","LC","U","M"),  # 38 --fixed
           ("RDC","U","U","R","U","RC","U","RD"),  # 39 --fixed
           ("RC","RC","U","RC","BC","R","UC","RC","RC","U","LD","U","LDC"),  # 40 --fixed
-          ("R", "U", "XC", "R", "UC", "RC", "UC", "X", "UC", "RC"),  # 41 --fixed
+          ("R", "U", "XC", "R", "UC", "RC", "U", "X", "UC", "RC"),  # 41 --fixed
           ("R", "U", "RC", "UC", "X", "DC", "RC", "U", "R", "EC"),  # 42--fixed
           ("RC", "F", "R", "U", "RC", "FC", "R", "Y", "L", "UC", "LC"),  # 43 --fixed
           ("L", "FC", "LC", "UC", "L", "F", "LC", "YC", "RC", "U", "R"),  # 44 --fixed
@@ -2057,14 +2057,14 @@ class RubiksCube {
           ("R","B","RC","L","U","LC","UC","R","BC","RC"),  # 46 --fixed
           ("F", "U", "R", "UC", "RC", "FC"),  # 47 --fixed
           ("RC","DDC","L","DD","R","UC","RC","FC","R"),  # 48 --fixed
-          ("L", "D", "RC", "DC", "LC", "U", "L", "F", "LC"),  # 49 --fixed
+          ("L", "DD", "RC", "DDC", "LC", "U", "L", "F", "LC"),  # 49 --fixed
           ("FC", "UC", "LC", "U", "L", "F"),  # 50 --fixed
           ("F","R","U","RC","UC","FC"),  # 51 --fixed
-          ("R", "U", "RC", "UC", "RC", "F", "R", "F"),  # 52 --fixed
+          ("R", "U", "RC", "UC", "RC", "F", "R", "FC"),  # 52 --fixed
           ("L", "U", "LC", "U", "L", "UC", "LC", "UC", "YC", "YC", "RC", "F", "R", "FC"),  # 53 --fixed
           ("RC", "UC", "R", "UC", "RC", "U", "R", "U", "Y", "F", "RC", "FC", "R"),  # 54 --fixed
           ("RC","F","R","U","RC","UC","Y","LC","DD","R"),  # 55 --fixed
-          ("L", "FC", "LC", "UC", "L", "U", "YC", "R", "DC", "LC")  # 56 --fixed
+          ("L", "FC", "LC", "UC", "L", "U", "YC", "R", "DDC", "LC")  # 56 --fixed
           
       )
       # 1. read all of top layer
@@ -2151,6 +2151,7 @@ class RubiksCube {
           Write-Host "$executor Top layer = $topLayer"
           ApplyMoveSet $index
           Write-Host "$executor Top layer was = $topLayer"
+          $this.printCube()
       }
 
       solveOLLMain
@@ -2159,6 +2160,75 @@ class RubiksCube {
   
   [void] SolvePLL() {
       $executor = "[PLL-SOLVER]:"
+      
+      function findMoveSet($moveSet) {
+          Write-Host "$executor Searching for the correct Moveset using [ $moveSet ]"
+          $moveSet = "$moveSet"
+          switch($moveSet) {
+              "41032567" { return 0 } #fixed A1 -
+              "21634507" { return 1 } #fixed A2 -
+              "07234165" { return 2 } #fixed U1 
+              "05234761" { return 3 } #fixed U2
+              "05274163" { return 4 } #fixed H
+              "25034167" { return 5 } #fixed T -
+              "01452367" { return 6 } #fixed J1
+              "27034561" { return 7 } #fixed J2
+              "01432765" { return 8 } #fixed R1
+              "07432561" { return 9 } #fixed R2 -
+              "43210567" { return 10 } #fixed V
+              "03652147" { return 11 } #fixed G1
+              "41276305" { return 12 } #fixed G2
+              "47236105" { return 13 } #fixed G3 -
+              "01652743" { return 14 } #fixed G4
+              "65234107" { return 15 } #fixed F
+              "07254361" { return 16 } #fixed Z
+              "41250367" { return 17 } #fixed Y -
+              "41270563" { return 18 } #fixed N1
+              "01674523" { return 19 } #fixed N2
+              "21036547" { return 20 } #fixed E
+              default { return 21 }
+          }
+      }
+      
+      $moveSets = @(
+          ("X", "RC", "U", "RC", "D", "D", "R", "UC", "RC", "D", "D", "R", "R"),
+          ("XC", "R", "UC", "R", "D", "D", "RC", "U", "R", "D", "D", "R", "R"),
+          ("R", "R", "U", "R", "U", "RC", "UC", "RC", "UC", "RC", "U", "RC"),
+          ("R", "UC", "R", "U", "R", "U", "R", "UC", "RC", "UC", "R", "R"),
+          ("M", "M", "U", "M", "M", "U", "U", "M", "M", "U", "M", "M"),
+          ("R", "U", "RC", "UC", "RC", "F", "R", "R", "UC", "RC", "UC", "R", "U", "RC", "FC"),
+          ("RC", "U", "LC", "U", "U", "R", "UC", "RC", "U", "U", "R", "L", "UC"),
+          ("R", "U", "RC", "FC", "R", "U", "RC", "UC", "RC", "F", "R", "R", "UC", "RC", "UC"),
+          ("L", "UC", "UC", "LC", "UC", "UC", "L", "FC", "LC", "UC", "L", "U", "L", "F", "LC", "LC", "U"),
+          ("RC", "U", "U", "R", "U", "U", "RC", "F", "R", "U", "RC", "UC", "RC", "FC", "R", "R", "UC"),
+          ("RC", "U", "RC", "DDC", "RC", "FC", "R", "R", "UC", "RC", "U", "RC", "F", "R", "F"),
+          ("R", "R", "UD", "RC", "U", "RC", "UC", "R", "UDC", "R", "R", "YC", "RC", "U", "R"),
+          ("RC", "UC", "R", "Y", "R", "R", "UD", "RC", "U", "R", "UC", "R", "UDC", "R", "R"),
+          ("R", "R", "UDC", "R", "UC", "R", "U", "RC", "UD", "R", "R", "Y", "R", "UC", "RC"),
+          ("R", "U", "RC", "YC", "R", "R", "UDC", "R", "UC", "RC", "U", "RC", "UD", "R", "R"),
+          ("RC", "U", "U", "RC", "DDC", "RC", "FC", "R", "R", "UC", "RC", "U", "RC", "F", "R", "UC", "F"),
+          ("M", "M", "U", "M", "M", "U", "M", "M", "U", "U", "M", "M", "U", "U", "MC", "U", "U"),
+          ("F", "R", "UC", "RC", "UC", "R", "U", "RC", "FC", "R", "U", "RC", "UC", "RC", "F", "R", "FC"),
+          ("L", "UC", "R", "U", "U", "LC", "U", "RC", "L", "UC", "R", "U", "U", "LC", "U", "RC", "U"),
+          ("RC", "U", "LC", "U", "U", "R", "UC", "L", "RC", "U", "LC", "U", "U", "R", "UC", "L", "UC"),
+          ("XC", "R", "UC", "RC", "D", "R", "U", "RC", "UD", "UD", "RC", "U", "R", "D", "RC", "UC", "R")
+      )
+      
+      function applyMoveSet($index) {
+          Write-Host "--------------------------------------------------------------"
+          $this.printCube()
+          Write-Host "--------------------------------------------------------------"
+          $selArray = $moveSets[$index]
+          $arrayLength = $selArray.Length -1
+          for($i = 0; $i -le $arrayLength; $i++) {
+              $selMove = $selArray[$i]
+              Write-Host "$executor Executing Move [ $selMove ]"
+              $this.Move("$selMove")
+          }
+          $this.printCube()
+          $this.rotateCube()
+          Write-Host "--------------------------------------------------------------"
+      }
       
       $topLayer = @("-","-","-","-","-","-","-","-")
       $topLayerInt = @(0,0,0,0,0,0,0,0)
@@ -2193,7 +2263,9 @@ class RubiksCube {
 
       }
       
-      function storeTopLayerInt() {
+      # -------------------- CASE 1 --------------------
+      function storeTopLayerInt1() {
+          $moveSet = ""
           for($i = 0; $i -le 7; $i ++) {
               $selTopLayerElement = $topLayer[$i]
               switch($selTopLayerElement) {
@@ -2206,7 +2278,66 @@ class RubiksCube {
                   "GO" { $topLayerInt[$i] = 6 }
                   "O" { $topLayerInt[$i] = 7 }
               }
+              $moveSet = $moveSet + $topLayerInt[$i]
           }
+          return $moveSet
+      }
+      # -------------------- CASE 2 --------------------
+      function storeTopLayerInt2() {
+          $moveSet = ""
+          for($i = 0; $i -le 7; $i ++) {
+              $selTopLayerElement = $topLayer[$i]
+              switch($selTopLayerElement) {
+                  "OB" { $topLayerInt[$i] = 6 }
+                  "B" { $topLayerInt[$i] = 7 }
+                  "BR" { $topLayerInt[$i] = 0 }
+                  "R" { $topLayerInt[$i] = 1 }
+                  "RG" { $topLayerInt[$i] = 2 }
+                  "G" { $topLayerInt[$i] = 3 }
+                  "GO" { $topLayerInt[$i] = 4 }
+                  "O" { $topLayerInt[$i] = 5 }
+              }
+              $moveSet = $moveSet + $topLayerInt[$i]
+          }
+          return $moveSet
+      }
+      # -------------------- CASE 3 --------------------
+      function storeTopLayerInt3() {
+          $moveSet = ""
+          for($i = 0; $i -le 7; $i ++) {
+              $selTopLayerElement = $topLayer[$i]
+              switch($selTopLayerElement) {
+                  "OB" { $topLayerInt[$i] = 4 }
+                  "B" { $topLayerInt[$i] = 5 }
+                  "BR" { $topLayerInt[$i] = 6 }
+                  "R" { $topLayerInt[$i] = 7 }
+                  "RG" { $topLayerInt[$i] = 0 }
+                  "G" { $topLayerInt[$i] = 1 }
+                  "GO" { $topLayerInt[$i] = 2 }
+                  "O" { $topLayerInt[$i] = 3 }
+              }
+              $moveSet = $moveSet + $topLayerInt[$i]
+          }
+          return $moveSet
+      }
+      # -------------------- CASE 4 --------------------
+      function storeTopLayerInt4() {
+          $moveSet = ""
+          for($i = 0; $i -le 7; $i ++) {
+              $selTopLayerElement = $topLayer[$i]
+              switch($selTopLayerElement) {
+                  "OB" { $topLayerInt[$i] = 2 }
+                  "B" { $topLayerInt[$i] = 3 }
+                  "BR" { $topLayerInt[$i] = 4 }
+                  "R" { $topLayerInt[$i] = 5 }
+                  "RG" { $topLayerInt[$i] = 6 }
+                  "G" { $topLayerInt[$i] = 7 }
+                  "GO" { $topLayerInt[$i] = 0 }
+                  "O" { $topLayerInt[$i] = 1 }
+              }
+              $moveSet = $moveSet + $topLayerInt[$i]
+          }
+          return $moveSet
       }
       
       function printTopLayer() {
@@ -2225,11 +2356,120 @@ class RubiksCube {
           Write-Host
       }
       
+      # ------------------------------------------------
+      function solveTopLayer1() {
+          for($i = 0; $i -le 4; $i++) {
+              storeTopLayer
+              $moveSet = storeTopLayerInt1
+              Write-Host "$executor Moveset = $moveSet"
+              $index = findMoveSet $moveSet
+              Write-Host "$executor Index = $index"
+              if ($index -ne 21) {
+                  Write-Host "$executor Executing Moveset [ $index ]"
+                  applyMoveSet $index
+                  break
+              } else {
+                  Write-Host "$executor could not find a Moveset, rotating the top layer..."
+                  $this.Move("U")
+                  $this.printCube()
+              }
+              
+          }
+          $this.rotateCube()
+      }
+      # ------------------------------------------------
+      function solveTopLayer2() {
+          for($i = 0; $i -le 4; $i++) {
+              storeTopLayer
+              $moveSet = storeTopLayerInt2
+              Write-Host "$executor Moveset = $moveSet"
+              $index = findMoveSet $moveSet
+              Write-Host "$executor Index = $index"
+              if ($index -ne 21) {
+                  Write-Host "$executor Executing Moveset [ $index ]"
+                  applyMoveSet $index
+                  break
+              } else {
+                  Write-Host "$executor could not find a Moveset, rotating the top layer..."
+                  $this.Move("U")
+                  $this.printCube()
+              }
+              
+          }
+          $this.rotateCube()
+      }
+      # ------------------------------------------------
+      function solveTopLayer3() {
+          for($i = 0; $i -le 4; $i++) {
+              storeTopLayer
+              $moveSet = storeTopLayerInt3
+              Write-Host "$executor Moveset = $moveSet"
+              $index = findMoveSet $moveSet
+              Write-Host "$executor Index = $index"
+              if ($index -ne 21) {
+                  Write-Host "$executor Executing Moveset [ $index ]"
+                  applyMoveSet $index
+                  break
+              } else {
+                  Write-Host "$executor could not find a Moveset, rotating the top layer..."
+                  $this.Move("U")
+                  $this.printCube()
+              }
+              
+          }
+          $this.rotateCube()
+      }
+      # ------------------------------------------------
+      function solveTopLayer4() {
+          for($i = 0; $i -le 4; $i++) {
+              storeTopLayer
+              $moveSet = storeTopLayerInt4
+              Write-Host "$executor Moveset = $moveSet"
+              $index = findMoveSet $moveSet
+              Write-Host "$executor Index = $index"
+              if ($index -ne 21) {
+                  Write-Host "$executor Executing Moveset [ $index ]"
+                  applyMoveSet $index
+                  break
+              } else {
+                  Write-Host "$executor could not find a Moveset, rotating the top layer..."
+                  $this.Move("U")
+                  $this.printCube()
+              }
+              
+          }
+          $this.rotateCube()
+      }
+      
       function solvePLLMain() {
           storeTopLayer
           printTopLayer
-          storeTopLayerInt
+          $moveSet = storeTopLayerInt1
+          $index = findMoveSet $moveSet
+          Write-Host "$executor Moveset = $moveSet"
           printTopLayerInt
+          
+          solveTopLayer1
+          solveTopLayer2
+          solveTopLayer3
+          solveTopLayer4
+          
+          #Write-Host "$executor Found Index: $index"
+          
+          #applyMoveSet $index
+          
+          $checkTile = $this.Back[0][1]
+          
+          if($checkTile -ne "R") {
+              Write-Host "$executor Correcting Top Layer..."
+              switch($checkTile) {
+                  "G" { $this.Move("UC") }
+                  "B" { $this.Move("U") }
+                  "O" { $this.Move("U"); $this.Move("U") }
+              }
+          }
+          
+          $this.printCube()
       }
       
       solvePLLMain
@@ -2305,41 +2545,35 @@ Line "Printing the cube..."
 $cube.printCube()
 Line "Printed the cube."
 
-$doRepeat = $false
-$cubeNotValid = $false
-while($doRepeat) {
-    if ($cubeIsUnsolved) {
-        if ($stage -eq "CROSS") {
-            Line "Starting step (1) > Cross"
-            $cube.SolveCross()
-            $cube.StageFinder()
-        } elseif ($stage -eq "F2L") {
-            Line "Starting step (2) > F2L"
-            $cube.SolveF2L()
-            $doRepeat = $false
-        } elseif ($stage -eq "OLL") {
-            Line "Starting step (3) > OLL"  
-            $doRepeat = $false
-            #start OLL
-        } elseif ($stage -eq "PLL") {
-            Line "Starting step (4) > PLL"
-            $doRepeat = $false
-            $CubeIsUnsolved = $false # temporary
-            #start PLL
-        } elseif ($stage -eq "SOLVED") {
-            Line "Success! The RubiksCube is solved!"
-            $doRepeat = $false
-            $cubeIsUnsolved = $false
-        } else {
-            Write-Host "An Error occured while finding the stage."
-        }
+
+$stage = "SOLVED"
+
+for($i = 0; $i -le 10; $i++) {
+    if($stage -eq "SOLVED") {
+        $cube.scrambleCube()
+        
+        $cube.SolveCross()  
+
+        $cube.SolveCross()
+
+        $cube.SolveF2L()
+
+        $cube.SolveOLL()
+
+        $cube.SolvePLL()
+        Start-Sleep -Milliseconds 3000
+
+        Line "Finding stage..."
+        $stage = $cube.StageFinder()   # CHECK IMPACT OF $STAGE
+        Line "Stage found."
+    } else {
+        Line "ERROR Stage = $stage"
+        break
     }
+    Start-Sleep -Milliseconds 1000
 }
 
-$cube.SolveCross()
-$cube.SolveF2L()
-$cube.SolveOLL()
-$cube.SolvePLL()
+Write-Host "$executor The Cube is in Stage: $stage"
 
 Line "Printing the cube..."
 $cube.printCube()
